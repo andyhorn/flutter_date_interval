@@ -5,10 +5,20 @@ import './utils/datetime_utils.dart';
 class DateInterval {
   /// Creates an instance of the [DateInterval] class.
   DateInterval({
+    /// The beginning of the interval. Determines the day-of-month (for monthly interval), day-of-week (for weekly interval).
     DateTime? startDate,
+
+    /// The last possible day for this interval. Any dates beyond this date will not be counted.
     DateTime? endDate,
+
+    /// The frequency at which the interval occurs, i.e. how many [interval]s between each date.
+    /// Must be 1 or greater, or an [ArgumentError] will be thrown.
     this.period = 1,
+
+    /// The interval at which this pattern occurs.
     this.interval = Intervals.once,
+
+    /// Any specific dates within the interval to skip that might otherwise be counted.
     Iterable<DateTime>? skipDates,
   }) {
     if (period < 1) {
@@ -33,8 +43,8 @@ class DateInterval {
   final List<DateTime> skipDates = [];
 
   /// Returns an [Iterable<DateTime>] of all valid dates between the
-  /// configured [startDate], the configured [endDate] (if present),
-  /// and the supplied [targetEndDate].
+  /// configured [startDate] and the earliest of the configured
+  /// [endDate] (if present) or the supplied [targetEndDate].
   Iterable<DateTime> getDatesThrough(DateTime targetEndDate) {
     final List<DateTime> dates = [];
     int round = 0;
@@ -60,7 +70,7 @@ class DateInterval {
     return dates;
   }
 
-  /// Determines if the [targetDate] exists along the configured pattern.
+  /// Determines if the [targetDate] falls along the configured interval.
   bool isValidIntervalDate(DateTime targetDate) {
     if (targetDate.isBefore(startDate) ||
         _isSkipDate(targetDate) ||
