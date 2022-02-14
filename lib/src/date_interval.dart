@@ -71,7 +71,7 @@ class DateInterval {
   }
 
   /// Determines if the [targetDate] falls along the configured interval.
-  bool isValidIntervalDate(DateTime targetDate) {
+  bool includes(DateTime targetDate) {
     if (targetDate.isBefore(startDate) ||
         _isSkipDate(targetDate) ||
         _isAfterEndDate(targetDate)) {

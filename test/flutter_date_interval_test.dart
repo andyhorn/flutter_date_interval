@@ -169,7 +169,7 @@ void main() {
             startDate: date,
             interval: Intervals.once,
           );
-          expect(interval.isValidIntervalDate(date), isTrue);
+          expect(interval.includes(date), isTrue);
         });
 
         test('when the days are not the same', () {
@@ -181,7 +181,7 @@ void main() {
 
           for (int i = 0; i < 100; i++) {
             date = date.add(const Duration(days: 1));
-            expect(interval.isValidIntervalDate(date), isFalse);
+            expect(interval.includes(date), isFalse);
           }
         });
       });
@@ -193,7 +193,7 @@ void main() {
             startDate: date,
             interval: Intervals.daily,
           );
-          expect(interval.isValidIntervalDate(date), isTrue);
+          expect(interval.includes(date), isTrue);
         });
 
         test('when the days are correctly spaced', () {
@@ -215,7 +215,7 @@ void main() {
           ];
 
           for (final DateTime date in dates) {
-            expect(interval.isValidIntervalDate(date), isTrue);
+            expect(interval.includes(date), isTrue);
           }
         });
 
@@ -238,7 +238,7 @@ void main() {
           ];
 
           for (final DateTime date in dates) {
-            expect(interval.isValidIntervalDate(date), isFalse);
+            expect(interval.includes(date), isFalse);
           }
         });
 
@@ -253,7 +253,7 @@ void main() {
             period: 2,
           );
 
-          expect(interval.isValidIntervalDate(DateTime(2020, 01, 17)), isFalse);
+          expect(interval.includes(DateTime(2020, 01, 17)), isFalse);
         });
 
         test(
@@ -268,7 +268,7 @@ void main() {
             period: 2,
           );
 
-          expect(interval.isValidIntervalDate(DateTime(2020, 01, 15)), isTrue);
+          expect(interval.includes(DateTime(2020, 01, 15)), isTrue);
         });
       });
 
@@ -280,7 +280,7 @@ void main() {
             interval: Intervals.weekly,
             period: 2,
           );
-          expect(interval.isValidIntervalDate(DateTime(2020, 01, 01)), isTrue);
+          expect(interval.includes(DateTime(2020, 01, 01)), isTrue);
         });
 
         test('when the days are correctly spaced', () {
@@ -297,7 +297,7 @@ void main() {
           ];
 
           for (final DateTime date in dates) {
-            expect(interval.isValidIntervalDate(date), isTrue);
+            expect(interval.includes(date), isTrue);
           }
         });
 
@@ -315,7 +315,7 @@ void main() {
           ];
 
           for (final DateTime date in dates) {
-            expect(interval.isValidIntervalDate(date), isFalse);
+            expect(interval.includes(date), isFalse);
           }
         });
       });
@@ -328,7 +328,7 @@ void main() {
             interval: Intervals.monthly,
             period: 2,
           );
-          expect(interval.isValidIntervalDate(DateTime(2020, 01, 01)), isTrue);
+          expect(interval.includes(DateTime(2020, 01, 01)), isTrue);
         });
 
         test('when the target date is on the interval', () {
@@ -345,7 +345,7 @@ void main() {
           ];
 
           for (final DateTime date in dates) {
-            expect(interval.isValidIntervalDate(date), isTrue);
+            expect(interval.includes(date), isTrue);
           }
         });
 
@@ -363,7 +363,7 @@ void main() {
           ];
 
           for (final DateTime date in dates) {
-            expect(interval.isValidIntervalDate(date), isFalse);
+            expect(interval.includes(date), isFalse);
           }
         });
 
@@ -383,7 +383,7 @@ void main() {
           ];
 
           for (final DateTime date in dates) {
-            expect(interval.isValidIntervalDate(date), isTrue);
+            expect(interval.includes(date), isTrue);
           }
         });
       });
@@ -396,7 +396,7 @@ void main() {
             interval: Intervals.yearly,
             period: 1,
           );
-          expect(interval.isValidIntervalDate(startDate), isTrue);
+          expect(interval.includes(startDate), isTrue);
         });
 
         test('when the target date falls on the interval', () {
@@ -414,7 +414,7 @@ void main() {
           ];
 
           for (final DateTime date in dates) {
-            expect(interval.isValidIntervalDate(date), isTrue);
+            expect(interval.includes(date), isTrue);
           }
         });
 
@@ -433,7 +433,7 @@ void main() {
           ];
 
           for (final DateTime date in dates) {
-            expect(interval.isValidIntervalDate(date), isFalse);
+            expect(interval.includes(date), isFalse);
           }
         });
 
@@ -451,10 +451,10 @@ void main() {
           ];
 
           for (final DateTime date in nonMatchingDates) {
-            expect(interval.isValidIntervalDate(date), isFalse);
+            expect(interval.includes(date), isFalse);
           }
 
-          expect(interval.isValidIntervalDate(DateTime(2024, 02, 29)), isTrue);
+          expect(interval.includes(DateTime(2024, 02, 29)), isTrue);
         });
       });
     });
