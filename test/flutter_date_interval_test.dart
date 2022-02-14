@@ -271,6 +271,192 @@ void main() {
           expect(interval.isValidIntervalDate(DateTime(2020, 01, 15)), isTrue);
         });
       });
+
+      group('for the weekly interval type', () {
+        test('when the days are the same', () {
+          final DateTime startDate = DateTime(2020, 01, 01);
+          final DateInterval interval = DateInterval(
+            startDate: startDate,
+            interval: Intervals.weekly,
+            period: 2,
+          );
+          expect(interval.isValidIntervalDate(DateTime(2020, 01, 01)), isTrue);
+        });
+
+        test('when the days are correctly spaced', () {
+          final DateTime startDate = DateTime(2020, 01, 01);
+          final DateInterval interval = DateInterval(
+            startDate: startDate,
+            interval: Intervals.weekly,
+            period: 2,
+          );
+          final List<DateTime> dates = [
+            DateTime(2020, 01, 01),
+            DateTime(2020, 01, 15),
+            DateTime(2020, 01, 29),
+          ];
+
+          for (final DateTime date in dates) {
+            expect(interval.isValidIntervalDate(date), isTrue);
+          }
+        });
+
+        test('when the days are incorrecly spaced', () {
+          final DateTime startDate = DateTime(2020, 01, 01);
+          final DateInterval interval = DateInterval(
+            startDate: startDate,
+            interval: Intervals.weekly,
+            period: 2,
+          );
+          final List<DateTime> dates = [
+            DateTime(2020, 01, 08),
+            DateTime(2020, 01, 22),
+            DateTime(2020, 02, 05),
+          ];
+
+          for (final DateTime date in dates) {
+            expect(interval.isValidIntervalDate(date), isFalse);
+          }
+        });
+      });
+
+      group('for the monthly interval type', () {
+        test('when the target date is the same as the start date', () {
+          final DateTime startDate = DateTime(2020, 01, 01);
+          final DateInterval interval = DateInterval(
+            startDate: startDate,
+            interval: Intervals.monthly,
+            period: 2,
+          );
+          expect(interval.isValidIntervalDate(DateTime(2020, 01, 01)), isTrue);
+        });
+
+        test('when the target date is on the interval', () {
+          final DateTime startDate = DateTime(2020, 01, 01);
+          final DateInterval interval = DateInterval(
+            startDate: startDate,
+            interval: Intervals.monthly,
+            period: 2,
+          );
+          final List<DateTime> dates = [
+            DateTime(2020, 01, 01),
+            DateTime(2020, 03, 01),
+            DateTime(2020, 05, 01),
+          ];
+
+          for (final DateTime date in dates) {
+            expect(interval.isValidIntervalDate(date), isTrue);
+          }
+        });
+
+        test('when the target date is not on the interval', () {
+          final DateTime startDate = DateTime(2020, 01, 01);
+          final DateInterval interval = DateInterval(
+            startDate: startDate,
+            interval: Intervals.monthly,
+            period: 2,
+          );
+          final List<DateTime> dates = [
+            DateTime(2020, 02, 01),
+            DateTime(2020, 04, 01),
+            DateTime(2020, 06, 01),
+          ];
+
+          for (final DateTime date in dates) {
+            expect(interval.isValidIntervalDate(date), isFalse);
+          }
+        });
+
+        test('when the start date is near the end of the month', () {
+          final DateTime startDate = DateTime(2020, 01, 31);
+          final DateInterval interval = DateInterval(
+            startDate: startDate,
+            interval: Intervals.monthly,
+            period: 1,
+          );
+          final List<DateTime> dates = [
+            DateTime(2020, 01, 31),
+            DateTime(2020, 02, 29), // leap day
+            DateTime(2020, 03, 31), // same date
+            DateTime(2020, 04, 30), // nearest possible day
+            DateTime(2021, 02, 28), // non leap day
+          ];
+
+          for (final DateTime date in dates) {
+            expect(interval.isValidIntervalDate(date), isTrue);
+          }
+        });
+      });
+
+      group('for the yearly interval type', () {
+        test('when the target date is the same as the start date', () {
+          final DateTime startDate = DateTime(2020, 01, 01);
+          final DateInterval interval = DateInterval(
+            startDate: startDate,
+            interval: Intervals.yearly,
+            period: 1,
+          );
+          expect(interval.isValidIntervalDate(startDate), isTrue);
+        });
+
+        test('when the target date falls on the interval', () {
+          final DateTime startDate = DateTime(2020, 01, 01);
+          final DateInterval interval = DateInterval(
+            startDate: startDate,
+            interval: Intervals.yearly,
+            period: 2,
+          );
+          final List<DateTime> dates = [
+            DateTime(2020, 01, 01),
+            DateTime(2022, 01, 01),
+            DateTime(2024, 01, 01),
+            DateTime(2026, 01, 01),
+          ];
+
+          for (final DateTime date in dates) {
+            expect(interval.isValidIntervalDate(date), isTrue);
+          }
+        });
+
+        test('when the target date is not on the interval', () {
+          final DateTime startDate = DateTime(2020, 01, 01);
+          final DateInterval interval = DateInterval(
+            startDate: startDate,
+            interval: Intervals.yearly,
+            period: 2,
+          );
+          final List<DateTime> dates = [
+            DateTime(2021, 01, 01),
+            DateTime(2023, 01, 01),
+            DateTime(2025, 01, 01),
+            DateTime(2027, 01, 01),
+          ];
+
+          for (final DateTime date in dates) {
+            expect(interval.isValidIntervalDate(date), isFalse);
+          }
+        });
+
+        test('when the start date is February 29th during a leap year', () {
+          final DateTime startDate = DateTime(2020, 02, 29);
+          final DateInterval interval = DateInterval(
+            startDate: startDate,
+            interval: Intervals.yearly,
+            period: 1,
+          );
+          final List<DateTime> nonMatchingDates = [
+            DateTime(2021, 02, 28),
+            DateTime(2023, 02, 28),
+            DateTime(2024, 02, 28),
+          ];
+
+          for (final DateTime date in nonMatchingDates) {
+            expect(interval.isValidIntervalDate(date), isFalse);
+          }
+
+          expect(interval.isValidIntervalDate(DateTime(2024, 02, 29)), isTrue);
+        });
+      });
     });
   });
 }
