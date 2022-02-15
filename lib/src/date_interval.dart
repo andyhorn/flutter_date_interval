@@ -1,24 +1,16 @@
 import 'intervals.dart';
+import 'package:intl/intl.dart' show DateFormat;
 import './utils/datetime_utils.dart';
 
 /// Defines a repetition interval.
 class DateInterval {
   /// Creates an instance of the [DateInterval] class.
+  /// [period] must be greater than 0 or it will throw an [ArgumentError].
   DateInterval({
-    /// The beginning of the interval. Determines the day-of-month (for monthly interval), day-of-week (for weekly interval).
     DateTime? startDate,
-
-    /// The last possible day for this interval. Any dates beyond this date will not be counted.
     DateTime? endDate,
-
-    /// The frequency at which the interval occurs, i.e. how many [interval]s between each date.
-    /// Must be 1 or greater, or an [ArgumentError] will be thrown.
     this.period = 1,
-
-    /// The interval at which this pattern occurs.
     this.interval = Intervals.once,
-
-    /// Any specific dates within the interval to skip that might otherwise be counted.
     Iterable<DateTime>? skipDates,
   }) {
     if (period < 1) {
@@ -36,10 +28,19 @@ class DateInterval {
     this.endDate = endDate?.withZeroTime();
   }
 
+  /// The beginning of the interval. Determines the day-of-month (for monthly interval), day-of-week (for weekly interval).
   late final DateTime startDate;
+
+  /// The last possible day for this interval. Any dates beyond this date will not be counted.
   late final DateTime? endDate;
+
+  /// The frequency at which the interval occurs, i.e. how many [interval]s between each date.
   final int period;
+
+  /// The interval at which this pattern occurs.
   final Intervals interval;
+
+  /// Any specific dates within the interval to skip that might otherwise be counted.
   final List<DateTime> skipDates = [];
 
   /// Returns an [Iterable<DateTime>] of all valid dates between the
@@ -90,6 +91,37 @@ class DateInterval {
       case Intervals.yearly:
         return targetDate.isOnYearlyIntervalFrom(startDate, period);
     }
+  }
+
+  /// Gets an English readable string representation of the interval pattern.
+  @override
+  String toString({bool includeStartDate = false}) {
+    String description = 'Every ';
+    switch (interval) {
+      case Intervals.once:
+        return 'Once on ${DateFormat.yMMMMd().format(startDate)}';
+      case Intervals.daily:
+        description += period > 1 ? '$period days' : 'day';
+        break;
+      case Intervals.weekly:
+        description += period > 1 ? '$period weeks' : 'week';
+        description += ' on ' + startDate.dayOfWeek;
+        break;
+      case Intervals.monthly:
+        description += period > 1 ? '$period months' : 'month';
+        description += ' on the ' + startDate.dayOfMonth;
+        break;
+      case Intervals.yearly:
+        description += period > 1 ? '$period years' : 'year';
+        description += ' on ${DateFormat.MMMMd().format(startDate)}';
+        break;
+    }
+
+    if (includeStartDate) {
+      description += ', beginning on ${DateFormat.yMMMMd().format(startDate)}';
+    }
+
+    return description;
   }
 
   bool _isAfterEndDate(DateTime date) =>
