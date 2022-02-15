@@ -57,7 +57,7 @@ expect(isOnInterval, isTrue); // true
 ## Additional Information
 Some special rules apply for the [Intervals.monthly] interval type. Since it's possible to set up an interval for the "31st of every month," but not every month has 31 days, the [DateInterval] will look for the "closest possible date."
 
-What this means is that, if you have a rule for the "31st of every month" (see example below), it will count the 28th of February, the 30th of March, and the 31st of October as lying on the interval.
+What this means is that, if you have a rule for the "31st of every month" (see example below), it will count the 28th of February, the 31st of March, the 30th of April, etc. all as lying on the interval.
 
 ```dart
 final DateInterval lastOfTheMonth = DateInterval(

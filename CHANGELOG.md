@@ -9,3 +9,6 @@ This package is based off of work that was previously developed inside another p
 
 ## 1.0.2
   * Improved examples
+
+## 1.0.3
+  * Fixed a typo in the README
