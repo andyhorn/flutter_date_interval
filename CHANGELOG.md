@@ -6,3 +6,6 @@ This package is based off of work that was previously developed inside another p
 ## 1.0.1
   * Updated the `toString` method to print a readable representation of the interval
   * Added an examples file
+
+## 1.0.2
+  * Improved examples
