@@ -3,7 +3,9 @@ name: Publish Package
 env:
   FLUTTER_VERSION: "3.0.5"
 
-on: release
+on:
+  release:
+    types: [published]
 
 jobs:
   build:
