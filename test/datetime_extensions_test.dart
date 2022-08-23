@@ -259,7 +259,7 @@ void main() {
       });
     });
 
-    group('the \isOnYearlyIntervalFrom\' function', () {
+    group('the \'isOnYearlyIntervalFrom\' function', () {
       final DateTime date = DateTime(2020, 01, 01);
 
       test('should match the same day, regardless of the interval', () {
