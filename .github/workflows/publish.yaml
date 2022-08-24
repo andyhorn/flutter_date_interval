@@ -28,7 +28,7 @@ jobs:
           repo: "andyhorn/set-pub-credentials"
           file: "set-pub-credentials.sh"
           target: "./set-pub-credentials.sh"
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT }}
       - name: Setup Pub Credentials
         shell: bash
         env:

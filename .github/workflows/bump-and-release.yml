@@ -16,7 +16,7 @@ jobs:
         id: bump-version
         uses: anothrNick/github-tag-action@1.36.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
           WITH_V: true
   release:
     runs-on: ubuntu-latest
@@ -26,6 +26,6 @@ jobs:
       - name: Create a Release
         uses: elgohr/Github-Release-Action@v4
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
         with:
           title: ${{ needs.bump.outputs.tag }}
