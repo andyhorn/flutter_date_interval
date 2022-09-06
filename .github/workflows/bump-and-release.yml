@@ -4,7 +4,7 @@ on:
     branches:
       - master
 jobs:
-  build-and-release:
+  bump:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -15,6 +15,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/checkout@v3
       - name: Create a Release
         uses: elgohr/Github-Release-Action@v4
