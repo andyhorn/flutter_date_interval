@@ -29,7 +29,7 @@ jobs:
           access-token: ${{ secrets.PUB_DEV_PUBLISH_ACCESS_TOKEN }}
           refresh-token: ${{ secrets.PUB_DEV_PUBLISH_REFRESH_TOKEN }}
           token-endpoint: ${{ secrets.PUB_DEV_PUBLISH_TOKEN_ENDPOINT }}
-          expiration: ${{ secrets.PUB_DEV_PUBLISH_EXPIRATION }}
+          token-expiration: ${{ secrets.PUB_DEV_PUBLISH_EXPIRATION }}
       - name: Check Publish Warnings
         run: pub publish --dry-run
       - name: Publish Package
