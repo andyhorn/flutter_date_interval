@@ -31,6 +31,6 @@ jobs:
           token-endpoint: ${{ secrets.PUB_DEV_PUBLISH_TOKEN_ENDPOINT }}
           token-expiration: ${{ secrets.PUB_DEV_PUBLISH_EXPIRATION }}
       - name: Check Publish Warnings
-        run: pub publish --dry-run
+        run: flutter pub publish --dry-run
       - name: Publish Package
-        run: pub publish -f
+        run: flutter pub publish -f
