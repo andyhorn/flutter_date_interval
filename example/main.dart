@@ -29,8 +29,6 @@ void main() {
 
   print(biWeekly.toString());
   // Every 2 weeks on Wednesday
-  print(biWeekly.toString(includeStartDate: true));
-  // Every 2 weeks on Wednesday, beginning on January 1, 2020
 
   print(biWeekly.includes(DateTime(2020, 01, 01))); // true
   print(biWeekly.includes(DateTime(2020, 01, 02))); // false
@@ -55,8 +53,6 @@ void main() {
 
   print(threeDays.toString());
   // Every 3 days
-  print(threeDays.toString(includeStartDate: true));
-  // Every 3 days, beginning on January 1, 2020
 
   print(threeDays.includes(DateTime(2020, 01, 01))); // true
   print(threeDays.includes(DateTime(2020, 01, 02))); // false
@@ -87,8 +83,6 @@ void main() {
 
   print(biAnnual.toString());
   // Every 6 months on the 1st
-  print(biAnnual.toString(includeStartDate: true));
-  // Every 6 months on the 1st, beginning on January 1, 2020
 
   print(biAnnual.includes(DateTime(2020, 01, 01))); // true
   print(biAnnual.includes(DateTime(2020, 07, 01))); // true

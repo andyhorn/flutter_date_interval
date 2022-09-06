@@ -1,5 +1,4 @@
 import 'intervals.dart';
-import 'package:intl/intl.dart' show DateFormat;
 import './utils/datetime_utils.dart';
 
 /// Defines a repetition interval.
@@ -91,37 +90,6 @@ class DateInterval {
       case Intervals.yearly:
         return targetDate.isOnYearlyIntervalFrom(startDate, period);
     }
-  }
-
-  /// Gets an English readable string representation of the interval pattern.
-  @override
-  String toString({bool includeStartDate = false}) {
-    String description = 'Every ';
-    switch (interval) {
-      case Intervals.once:
-        return 'Once on ${DateFormat.yMMMMd().format(startDate)}';
-      case Intervals.daily:
-        description += period > 1 ? '$period days' : 'day';
-        break;
-      case Intervals.weekly:
-        description += period > 1 ? '$period weeks' : 'week';
-        description += ' on ' + startDate.dayOfWeek;
-        break;
-      case Intervals.monthly:
-        description += period > 1 ? '$period months' : 'month';
-        description += ' on the ' + startDate.dayOfMonth;
-        break;
-      case Intervals.yearly:
-        description += period > 1 ? '$period years' : 'year';
-        description += ' on ${DateFormat.MMMMd().format(startDate)}';
-        break;
-    }
-
-    if (includeStartDate) {
-      description += ', beginning on ${DateFormat.yMMMMd().format(startDate)}';
-    }
-
-    return description;
   }
 
   bool _isAfterEndDate(DateTime date) =>
