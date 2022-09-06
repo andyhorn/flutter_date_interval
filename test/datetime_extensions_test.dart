@@ -348,6 +348,32 @@ void main() {
       });
     });
 
+    group('the \'daysApartFrom\' function', () {
+      final DateTime today = DateTime.now().withZeroTime();
+
+      test('should work for dates that are zero days apart', () {
+        final DateTime testDate = DateTime(today.year, today.month, today.day);
+        final int daysApart = testDate.daysAheadOf(today);
+        expect(daysApart, equals(0));
+      });
+
+      test('should work for dates that are one day apart', () {
+        final DateTime testDate =
+            DateTime(today.year, today.month, today.day + 1);
+        final int daysApart = testDate.daysAheadOf(today);
+        expect(daysApart, equals(1));
+      });
+
+      test('should work for dates that are two or more days apart', () {
+        for (int i = 2; i <= 1000; i++) {
+          final DateTime testDate =
+              DateTime(today.year, today.month, today.day + i);
+          final int daysApart = testDate.daysAheadOf(today);
+          expect(daysApart, equals(i));
+        }
+      });
+    });
+
     group('the \'through\' function', () {
       test('should capture dates in the correct order', () {
         final DateTime startDate = DateTime(2020, 01, 01);
