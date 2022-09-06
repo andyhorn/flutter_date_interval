@@ -24,7 +24,7 @@ jobs:
       - name: Run tests
         run: flutter test
       - name: Set Pub.dev Credentials
-        uses: andyhorn/set-pub-credentials@v1.0.0
+        uses: andyhorn/set-pub-credentials@1.0.0
         with:
           access-token: ${{ secrets.PUB_DEV_PUBLISH_ACCESS_TOKEN }}
           refresh-token: ${{ secrets.PUB_DEV_PUBLISH_REFRESH_TOKEN }}
