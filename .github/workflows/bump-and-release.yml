@@ -18,8 +18,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
-      - name: Store tag
-        run: echo "::set_output name=tag::$tag"
       - name: Echo tag
         run: echo ${{ steps.bump_version.outputs.tag }}
   release:
