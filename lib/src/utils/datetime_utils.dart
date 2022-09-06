@@ -48,13 +48,13 @@ extension DateTimeExtensions on DateTime {
   }
 
   bool isOnDailyIntervalFrom(DateTime startDate, int interval) {
-    final int numDaysApart = daysAheadOf(startDate);
+    final int numDaysApart = difference(startDate).inDays;
     return numDaysApart % interval == 0;
   }
 
   bool isOnWeeklyIntervalFrom(DateTime startDate, int interval) {
     final bool areSameWeekday = startDate.weekday == weekday;
-    final int weeksApart = (startDate.daysAheadOf(this) / 7).floor();
+    final int weeksApart = (difference(startDate).inDays / 7).floor();
     return areSameWeekday && weeksApart % interval == 0;
   }
 
@@ -109,13 +109,6 @@ extension DateTimeExtensions on DateTime {
     }
 
     return monthsInBetween + ((yearsApart - 1) * 12);
-  }
-
-  int daysAheadOf(DateTime other) {
-    final int millisecondsApart =
-        millisecondsSinceEpoch - other.millisecondsSinceEpoch;
-    final int daysApart = (millisecondsApart / 1000 / 60 / 60 / 24).ceil();
-    return daysApart;
   }
 
   Iterable<DateTime> through(DateTime endDate, {bool inclusive = true}) {
