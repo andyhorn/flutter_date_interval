@@ -23,7 +23,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     needs: bump
-    if: ${{ needs.bump.outputs.part != 'none' }}
+    if: ${{ needs.bump.outputs.part != "none" }}
     steps:
       - uses: actions/checkout@v3
       - name: Create a Release
