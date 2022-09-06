@@ -5,6 +5,7 @@ env:
 
 on:
   release:
+    types: [created]
 
 jobs:
   build:
