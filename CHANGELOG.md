@@ -1,3 +1,7 @@
+## 2.1.1
+
+Patches a bug that was causing "additional dates" to be skipped if their integer value was less than that of the `startDate`'s `day` value.
+
 ## 2.1.0
 
 <ul>
