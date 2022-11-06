@@ -35,7 +35,7 @@ class DateInterval {
       );
 
       if (date.month == this.startDate.month) {
-        additionalDates.add(date);
+        additionalDates.add(day);
       }
     });
   }
@@ -56,14 +56,13 @@ class DateInterval {
   final List<DateTime> skipDates = [];
 
   /// Any additional "days of the month" that work alongside the start date.
-  final List<DateTime> additionalDates = [];
+  final List<int> additionalDates = [];
 
   /// Returns an [Iterable<DateTime>] of all valid dates between the
   /// configured [startDate] and the earliest of the configured
   /// [endDate] (if present) or the supplied [targetEndDate].
   Iterable<DateTime> getDatesThrough(DateTime targetEndDate) {
     final List<DateTime> dates = [];
-    int round = 0;
     DateTime current = startDate;
 
     while (
@@ -74,13 +73,9 @@ class DateInterval {
 
       if (interval == Intervals.once) {
         break;
-      } else if (interval == Intervals.monthly) {
-        current = _getNextDate(startDate, offset: period * round)!;
-      } else {
-        current = _getNextDate(current)!;
       }
 
-      round++;
+      current = _getNextDate(current)!;
     }
 
     return dates;
@@ -102,7 +97,16 @@ class DateInterval {
       case Intervals.weekly:
         return targetDate.isOnWeeklyIntervalFrom(startDate, period);
       case Intervals.monthly:
-        final possibleDates = [startDate, ...additionalDates];
+        final possibleDates = [
+          startDate,
+          ...additionalDates.map(
+            (day) => DateTime(
+              startDate.year,
+              startDate.month,
+              day,
+            ),
+          ),
+        ];
         return possibleDates.any(
           (date) => targetDate.isOnMonthlyIntervalFrom(date, period),
         );
@@ -117,28 +121,44 @@ class DateInterval {
   bool _isSkipDate(DateTime date) =>
       skipDates.any((DateTime skipDate) => skipDate.isSameDayAs(date));
 
-  DateTime? _getNextDate(DateTime current, {int offset = 0}) {
+  DateTime? _getNextDate(DateTime current) {
     switch (interval) {
       case Intervals.daily:
         return current.add(Duration(days: period));
       case Intervals.weekly:
         return current.add(Duration(days: (7 * period)));
       case Intervals.monthly:
-        final int movement = period + offset;
+        final additionalDateIndex = additionalDates.indexWhere(
+          (date) => date > current.day,
+        );
 
-        if (current.day > 28) {
+        if (additionalDateIndex > -1) {
+          final date = DateTime(
+            current.year,
+            current.month,
+            additionalDates[additionalDateIndex],
+          );
+
+          if (date.month == current.month) {
+            return date;
+          }
+        }
+
+        var newDate = DateTime(
+          current.year,
+          current.month + period,
+          startDate.day,
+        );
+
+        if (current.day >= 28 && newDate.month != current.month + period) {
           return DateTime(
             current.year,
-            current.month + movement + 1,
+            current.month + period + 1,
             0,
           );
         }
 
-        return DateTime(
-          current.year,
-          current.month + movement,
-          current.day,
-        );
+        return newDate;
       case Intervals.yearly:
         if (current.month == DateTime.february && current.day == 29) {
           return DateTime(
