@@ -187,6 +187,45 @@ void main() {
             runTest();
           });
         });
+
+        group('with additional dates at the end of the month', () {
+          setUp(() {
+            dateInterval = DateInterval(
+              startDate: DateTime(2020, 01, 01),
+              interval: Intervals.monthly,
+              period: 1,
+              additionalDaysOfTheMonth: [15, 30],
+            );
+
+            expectedDates = [
+              DateTime(2020, 01, 01),
+              DateTime(2020, 01, 15),
+              DateTime(2020, 01, 30),
+              DateTime(2020, 02, 01),
+              DateTime(2020, 02, 15),
+              DateTime(2020, 02, 29),
+              DateTime(2020, 03, 01),
+              DateTime(2020, 03, 15),
+              DateTime(2020, 03, 30),
+              DateTime(2020, 04, 01),
+              DateTime(2020, 04, 15),
+              DateTime(2020, 04, 30),
+              DateTime(2020, 05, 01),
+              DateTime(2020, 05, 15),
+              DateTime(2020, 05, 30),
+              DateTime(2020, 06, 01),
+              DateTime(2020, 06, 15),
+              DateTime(2020, 06, 30),
+              DateTime(2020, 07, 01),
+            ];
+
+            result = dateInterval.getDatesThrough(DateTime(2020, 07)).toList();
+          });
+
+          test('should return the correct list of dates', () {
+            runTest();
+          });
+        });
       });
 
       group(Intervals.yearly, () {

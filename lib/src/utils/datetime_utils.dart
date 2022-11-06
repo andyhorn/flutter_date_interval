@@ -58,7 +58,11 @@ extension DateTimeExtensions on DateTime {
     return areSameWeekday && weeksApart % interval == 0;
   }
 
-  bool isOnMonthlyIntervalFrom(DateTime startDate, int interval) {
+  bool isOnMonthlyIntervalFrom(
+    DateTime startDate,
+    int interval, [
+    Iterable<int>? additionalDates,
+  ]) {
     final bool isOnMonthlyInterval = monthsApartFrom(startDate) % interval == 0;
 
     if (!isOnMonthlyInterval) {
@@ -68,9 +72,13 @@ extension DateTimeExtensions on DateTime {
     final int lastDayOfThisMonth = DateTime(year, month + 1, 0).day;
     if (lastDayOfThisMonth < startDate.day) {
       return day == lastDayOfThisMonth;
-    } else {
-      return startDate.day == day;
     }
+
+    if (additionalDates?.isNotEmpty == true) {
+      return [startDate.day, ...additionalDates!].contains(day);
+    }
+
+    return startDate.day == day;
   }
 
   bool isOnYearlyIntervalFrom(DateTime startDate, int interval) {

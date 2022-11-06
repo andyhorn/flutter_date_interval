@@ -27,17 +27,12 @@ class DateInterval {
         : startDate.withZeroTime();
     this.endDate = endDate?.withZeroTime();
 
-    additionalDaysOfTheMonth?.forEach((day) {
-      final date = DateTime(
-        this.startDate.year,
-        this.startDate.month,
-        day,
-      );
+    for (final day in additionalDaysOfTheMonth ?? <int>[]) {
+      if (day < 1 || day > 31) continue;
+      if (additionalDates.contains(day)) continue;
 
-      if (date.month == this.startDate.month) {
-        additionalDates.add(day);
-      }
-    });
+      additionalDates.add(day);
+    }
   }
 
   /// The beginning of the interval. Determines the day-of-month (for monthly interval), day-of-week (for weekly interval).
@@ -65,9 +60,11 @@ class DateInterval {
     final List<DateTime> dates = [];
     DateTime current = startDate;
 
-    while (
-        current.isBeforeOrSameAs(targetEndDate) && !_isAfterEndDate(current)) {
-      if (!_isSkipDate(current)) {
+    bool isValid(DateTime date) =>
+        date.isBeforeOrSameAs(targetEndDate) && !_isAfterEndDate(date);
+
+    while (isValid(current)) {
+      if (!_isSkipDate(current) && !dates.contains(current)) {
         dates.add(current);
       }
 
@@ -97,18 +94,10 @@ class DateInterval {
       case Intervals.weekly:
         return targetDate.isOnWeeklyIntervalFrom(startDate, period);
       case Intervals.monthly:
-        final possibleDates = [
+        return targetDate.isOnMonthlyIntervalFrom(
           startDate,
-          ...additionalDates.map(
-            (day) => DateTime(
-              startDate.year,
-              startDate.month,
-              day,
-            ),
-          ),
-        ];
-        return possibleDates.any(
-          (date) => targetDate.isOnMonthlyIntervalFrom(date, period),
+          period,
+          additionalDates,
         );
       case Intervals.yearly:
         return targetDate.isOnYearlyIntervalFrom(startDate, period);
@@ -128,28 +117,45 @@ class DateInterval {
       case Intervals.weekly:
         return current.add(Duration(days: (7 * period)));
       case Intervals.monthly:
+        // check for an additional date later in the same month
         final additionalDateIndex = additionalDates.indexWhere(
           (date) => date > current.day,
         );
 
+        // if an additional later date exists
         if (additionalDateIndex > -1) {
-          final date = DateTime(
+          final additionalDate = additionalDates[additionalDateIndex];
+          var date = DateTime(
             current.year,
             current.month,
-            additionalDates[additionalDateIndex],
+            additionalDate,
           );
 
-          if (date.month == current.month) {
+          // if the additional date is an "end of the month" date and results in
+          // a rollover, adjust to the last day of the current month
+          if (additionalDate >= 28 && date.month == current.month + 1) {
+            date = DateTime(
+              current.year,
+              current.month + 1,
+              0,
+            );
+          }
+
+          // if the additional date is valid for the current month (and is not
+          // a repeat), we can return it
+          if (date.month == current.month && date.day != current.day) {
             return date;
           }
         }
 
+        // if no valid additional date exists, begin at the next appropriate month
         var newDate = DateTime(
           current.year,
           current.month + period,
           startDate.day,
         );
 
+        // if there is a rollover, adjust to the end of the next period's month
         if (current.day >= 28 && newDate.month != current.month + period) {
           return DateTime(
             current.year,
