@@ -43,7 +43,7 @@ void main() {
         expect(listEquals(result, expectedDates), isTrue);
       }
 
-      group(Intervals.daily.name, () {
+      group('${Intervals.daily}', () {
         setUp(() {
           dateInterval = DateInterval(
             interval: Intervals.daily,
@@ -74,7 +74,7 @@ void main() {
         });
       });
 
-      group(Intervals.weekly.name, () {
+      group('${Intervals.weekly}', () {
         setUp(() {
           dateInterval = DateInterval(
             interval: Intervals.weekly,
@@ -99,7 +99,7 @@ void main() {
         });
       });
 
-      group(Intervals.monthly.name, () {
+      group('${Intervals.monthly}', () {
         setUp(() {
           dateInterval = DateInterval(
             startDate: DateTime(2020, 01, 01),
@@ -122,7 +122,7 @@ void main() {
         });
       });
 
-      group('${Intervals.monthly.name} at the end of the month', () {
+      group('${Intervals.monthly} at the end of the month', () {
         setUp(() {
           dateInterval = DateInterval(
             startDate: DateTime(2020, 01, 31),
@@ -154,7 +154,7 @@ void main() {
         });
       });
 
-      group(Intervals.yearly.name, () {
+      group('${Intervals.yearly}', () {
         setUp(() {
           dateInterval = DateInterval(
             startDate: DateTime(2020, 01, 15),
@@ -177,7 +177,7 @@ void main() {
         });
       });
 
-      group('${Intervals.yearly.name} on leap years', () {
+      group('${Intervals.yearly} on leap years', () {
         setUp(() {
           dateInterval = DateInterval(
             startDate: DateTime(2020, 02, 29),
