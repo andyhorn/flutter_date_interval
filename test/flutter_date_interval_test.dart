@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_date_interval/flutter_date_interval.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   group(DateInterval, () {
@@ -40,11 +41,23 @@ void main() {
       late List<DateTime> result;
 
       void runTest() {
+        final formatter = DateFormat.yMd().format;
+        final expected = expectedDates.map(formatter).toSet();
+        final resultDates = result.map(formatter).toSet();
+        final reason = StringBuffer();
+        reason.writeln('Expected: $expected');
+        reason.writeln('Received: $resultDates');
+        reason.writeln(
+          'Missing: ${expected.difference(resultDates)}',
+        );
+        reason.writeln(
+          'Extra: ${resultDates.difference(expected)}',
+        );
+
         expect(
           listEquals(result, expectedDates),
           isTrue,
-          reason:
-              'Expected $expectedDates\nbut got $result\nmissing ${expectedDates.toSet().difference(result.toSet())}',
+          reason: reason.toString(),
         );
       }
 
@@ -188,13 +201,42 @@ void main() {
           });
         });
 
+        group('with additional dates before the "start date"', () {
+          setUp(() {
+            dateInterval = DateInterval(
+              startDate: DateTime(2020, 01, 05),
+              interval: Intervals.monthly,
+              period: 1,
+              additionalDaysOfTheMonth: [1, 15],
+            );
+
+            expectedDates = [
+              DateTime(2020, 01, 05),
+              DateTime(2020, 01, 15),
+              DateTime(2020, 02, 01),
+              DateTime(2020, 02, 05),
+              DateTime(2020, 02, 15),
+              DateTime(2020, 03, 01),
+              DateTime(2020, 03, 05),
+              DateTime(2020, 03, 15),
+              DateTime(2020, 04, 01),
+            ];
+
+            result = dateInterval.getDatesThrough(DateTime(2020, 04)).toList();
+          });
+
+          test('should return the correct list of dates', () {
+            runTest();
+          });
+        });
+
         group('with additional dates at the end of the month', () {
           setUp(() {
             dateInterval = DateInterval(
               startDate: DateTime(2020, 01, 01),
               interval: Intervals.monthly,
               period: 1,
-              additionalDaysOfTheMonth: [15, 30],
+              additionalDaysOfTheMonth: [1, 15, 30],
             );
 
             expectedDates = [

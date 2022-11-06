@@ -58,6 +58,30 @@ extension DateTimeExtensions on DateTime {
     return areSameWeekday && weeksApart % interval == 0;
   }
 
+  DateTime? nextClosestDay(List<int> dates) {
+    final index = dates.indexWhere((date) => date > day);
+
+    if (index == -1) {
+      return null;
+    }
+
+    final date = DateTime(
+      year,
+      month,
+      dates[index],
+    );
+
+    if (date.month == month + 1) {
+      return DateTime(
+        year,
+        month + 1,
+        0,
+      );
+    }
+
+    return date;
+  }
+
   bool isOnMonthlyIntervalFrom(
     DateTime startDate,
     int interval, [
