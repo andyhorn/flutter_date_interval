@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_date_interval/flutter_date_interval.dart';
 
 void main() {
-  group('$DateInterval', () {
+  group(DateInterval, () {
     group('#ctor', () {
       test('should not be able to set a period of less than 1', () {
         expect(() => DateInterval(period: 0), throwsArgumentError);
@@ -40,10 +40,15 @@ void main() {
       late List<DateTime> result;
 
       void runTest() {
-        expect(listEquals(result, expectedDates), isTrue);
+        expect(
+          listEquals(result, expectedDates),
+          isTrue,
+          reason:
+              'Expected $expectedDates\nbut got $result\nmissing ${expectedDates.toSet().difference(result.toSet())}',
+        );
       }
 
-      group('${Intervals.daily}', () {
+      group(Intervals.daily, () {
         setUp(() {
           dateInterval = DateInterval(
             interval: Intervals.daily,
@@ -74,7 +79,7 @@ void main() {
         });
       });
 
-      group('${Intervals.weekly}', () {
+      group(Intervals.weekly, () {
         setUp(() {
           dateInterval = DateInterval(
             interval: Intervals.weekly,
@@ -99,7 +104,7 @@ void main() {
         });
       });
 
-      group('${Intervals.monthly}', () {
+      group(Intervals.monthly, () {
         setUp(() {
           dateInterval = DateInterval(
             startDate: DateTime(2020, 01, 01),
@@ -120,41 +125,110 @@ void main() {
         test('should return the correct list of dates', () {
           runTest();
         });
-      });
 
-      group('${Intervals.monthly} at the end of the month', () {
-        setUp(() {
-          dateInterval = DateInterval(
-            startDate: DateTime(2020, 01, 31),
-            interval: Intervals.monthly,
-            period: 1,
-          );
+        group('at the end of the month', () {
+          setUp(() {
+            dateInterval = DateInterval(
+              startDate: DateTime(2020, 01, 31),
+              interval: Intervals.monthly,
+              period: 1,
+            );
 
-          expectedDates = [
-            DateTime(2020, 01, 31),
-            DateTime(2020, 02, 29),
-            DateTime(2020, 03, 31),
-            DateTime(2020, 04, 30),
-            DateTime(2020, 05, 31),
-            DateTime(2020, 06, 30),
-            DateTime(2020, 07, 31),
-            DateTime(2020, 08, 31),
-            DateTime(2020, 09, 30),
-            DateTime(2020, 10, 31),
-            DateTime(2020, 11, 30),
-            DateTime(2020, 12, 31),
-          ];
+            expectedDates = [
+              DateTime(2020, 01, 31),
+              DateTime(2020, 02, 29),
+              DateTime(2020, 03, 31),
+              DateTime(2020, 04, 30),
+              DateTime(2020, 05, 31),
+              DateTime(2020, 06, 30),
+              DateTime(2020, 07, 31),
+              DateTime(2020, 08, 31),
+              DateTime(2020, 09, 30),
+              DateTime(2020, 10, 31),
+              DateTime(2020, 11, 30),
+              DateTime(2020, 12, 31),
+            ];
 
-          result =
-              dateInterval.getDatesThrough(DateTime(2021, 01, 01)).toList();
+            result =
+                dateInterval.getDatesThrough(DateTime(2021, 01, 01)).toList();
+          });
+
+          test('should return the correct list of dates', () {
+            runTest();
+          });
         });
 
-        test('should return the correct list of dates', () {
-          runTest();
+        group('with additional dates', () {
+          setUp(() {
+            dateInterval = DateInterval(
+              startDate: DateTime(2020, 01, 01),
+              interval: Intervals.monthly,
+              period: 2,
+              additionalDaysOfTheMonth: [10, 15],
+            );
+
+            expectedDates = [
+              DateTime(2020, 01, 01),
+              DateTime(2020, 01, 10),
+              DateTime(2020, 01, 15),
+              DateTime(2020, 03, 01),
+              DateTime(2020, 03, 10),
+              DateTime(2020, 03, 15),
+              DateTime(2020, 05, 01),
+              DateTime(2020, 05, 10),
+              DateTime(2020, 05, 15),
+              DateTime(2020, 07, 01),
+            ];
+
+            result = dateInterval.getDatesThrough(DateTime(2020, 07)).toList();
+          });
+
+          test('should return the correct list of dates', () {
+            runTest();
+          });
+        });
+
+        group('with additional dates at the end of the month', () {
+          setUp(() {
+            dateInterval = DateInterval(
+              startDate: DateTime(2020, 01, 01),
+              interval: Intervals.monthly,
+              period: 1,
+              additionalDaysOfTheMonth: [15, 30],
+            );
+
+            expectedDates = [
+              DateTime(2020, 01, 01),
+              DateTime(2020, 01, 15),
+              DateTime(2020, 01, 30),
+              DateTime(2020, 02, 01),
+              DateTime(2020, 02, 15),
+              DateTime(2020, 02, 29),
+              DateTime(2020, 03, 01),
+              DateTime(2020, 03, 15),
+              DateTime(2020, 03, 30),
+              DateTime(2020, 04, 01),
+              DateTime(2020, 04, 15),
+              DateTime(2020, 04, 30),
+              DateTime(2020, 05, 01),
+              DateTime(2020, 05, 15),
+              DateTime(2020, 05, 30),
+              DateTime(2020, 06, 01),
+              DateTime(2020, 06, 15),
+              DateTime(2020, 06, 30),
+              DateTime(2020, 07, 01),
+            ];
+
+            result = dateInterval.getDatesThrough(DateTime(2020, 07)).toList();
+          });
+
+          test('should return the correct list of dates', () {
+            runTest();
+          });
         });
       });
 
-      group('${Intervals.yearly}', () {
+      group(Intervals.yearly, () {
         setUp(() {
           dateInterval = DateInterval(
             startDate: DateTime(2020, 01, 15),
@@ -175,33 +249,33 @@ void main() {
         test('should return the correct list of dates', () {
           runTest();
         });
-      });
 
-      group('${Intervals.yearly} on leap years', () {
-        setUp(() {
-          dateInterval = DateInterval(
-            startDate: DateTime(2020, 02, 29),
-            interval: Intervals.yearly,
-            period: 1,
-          );
+        group('on leap years', () {
+          setUp(() {
+            dateInterval = DateInterval(
+              startDate: DateTime(2020, 02, 29),
+              interval: Intervals.yearly,
+              period: 1,
+            );
 
-          expectedDates = [
-            DateTime(2020, 02, 29),
-            DateTime(2024, 02, 29),
-            DateTime(2028, 02, 29),
-          ];
+            expectedDates = [
+              DateTime(2020, 02, 29),
+              DateTime(2024, 02, 29),
+              DateTime(2028, 02, 29),
+            ];
 
-          result = dateInterval.getDatesThrough(DateTime(2030)).toList();
-        });
+            result = dateInterval.getDatesThrough(DateTime(2030)).toList();
+          });
 
-        test('should return the correct list of dates', () {
-          runTest();
+          test('should return the correct list of dates', () {
+            runTest();
+          });
         });
       });
     });
 
     group('#includes', () {
-      group('${Intervals.once}', () {
+      group(Intervals.once, () {
         final DateTime date = DateTime(2020, 01, 01);
         final DateInterval interval = DateInterval(
           startDate: date,
@@ -221,7 +295,7 @@ void main() {
         });
       });
 
-      group('${Intervals.daily}', () {
+      group(Intervals.daily, () {
         final DateTime date = DateTime(2020, 01, 01);
         final DateTime endDate = DateTime(2020, 01, 15);
         final DateInterval interval = DateInterval(
@@ -273,7 +347,7 @@ void main() {
         });
       });
 
-      group('${Intervals.weekly}', () {
+      group(Intervals.weekly, () {
         late DateTime startDate;
         late DateTime endDate;
         late DateInterval interval;
@@ -325,7 +399,7 @@ void main() {
         });
       });
 
-      group('${Intervals.monthly}', () {
+      group(Intervals.monthly, () {
         late DateTime startDate;
         late DateInterval interval;
 
@@ -362,6 +436,50 @@ void main() {
           expect(dates.every((date) => !interval.includes(date)), isTrue);
         });
 
+        group('with additional days of the month', () {
+          setUp(() {
+            startDate = DateTime(2020, 01, 01);
+            interval = DateInterval(
+              startDate: startDate,
+              interval: Intervals.monthly,
+              period: 2,
+              additionalDaysOfTheMonth: [15, 20],
+            );
+          });
+
+          test('includes all correct dates', () {
+            final List<DateTime> dates = [
+              DateTime(2020, 01, 01),
+              DateTime(2020, 01, 15),
+              DateTime(2020, 01, 20),
+              DateTime(2020, 03, 01),
+              DateTime(2020, 03, 15),
+              DateTime(2020, 03, 20),
+              DateTime(2020, 05, 01),
+              DateTime(2020, 05, 15),
+              DateTime(2020, 05, 20),
+            ];
+
+            expect(dates.every(interval.includes), isTrue);
+          });
+
+          test('does not include incorrect dates', () {
+            final List<DateTime> dates = [
+              DateTime(2020, 01, 02),
+              DateTime(2020, 02, 15),
+              DateTime(2020, 02, 20),
+              DateTime(2020, 03, 02),
+              DateTime(2020, 04, 15),
+              DateTime(2020, 04, 20),
+              DateTime(2020, 05, 02),
+              DateTime(2020, 06, 15),
+              DateTime(2020, 06, 20),
+            ];
+
+            expect(dates.every((date) => !interval.includes(date)), isTrue);
+          });
+        });
+
         group('end of the month', () {
           setUp(() {
             startDate = DateTime(2020, 01, 31);
@@ -386,7 +504,7 @@ void main() {
         });
       });
 
-      group('${Intervals.yearly}', () {
+      group(Intervals.yearly, () {
         late DateTime startDate;
         late DateInterval interval;
 

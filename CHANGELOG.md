@@ -1,3 +1,19 @@
+## 2.1.0
+
+<ul>
+    <li>
+        Added support for "additional days of the month," i.e. you can now represent "the 1st and 15th of the month" (or any arbitrary set of dates) in a single `DateInterval` object
+        <ul>
+            <li>
+                This can be controlled by setting a list of `int` values in the `additionalDaysOfTheMonth` property on the constructor
+            </li>
+            <li>
+                These "additional days" still abide by the "closest end date" rule
+            </li>
+        </ul>
+    </li>
+</ul>
+
 ## 2.0.0
 
 - Removed the overridden `toString` method as it wasn't really within the scope of this project and wasn't very useful
