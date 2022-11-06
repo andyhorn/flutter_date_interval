@@ -362,6 +362,50 @@ void main() {
           expect(dates.every((date) => !interval.includes(date)), isTrue);
         });
 
+        group('with additional days of the month', () {
+          setUp(() {
+            startDate = DateTime(2020, 01, 01);
+            interval = DateInterval(
+              startDate: startDate,
+              interval: Intervals.monthly,
+              period: 2,
+              additionalDaysOfTheMonth: [15, 20],
+            );
+          });
+
+          test('includes all correct dates', () {
+            final List<DateTime> dates = [
+              DateTime(2020, 01, 01),
+              DateTime(2020, 01, 15),
+              DateTime(2020, 01, 20),
+              DateTime(2020, 03, 01),
+              DateTime(2020, 03, 15),
+              DateTime(2020, 03, 20),
+              DateTime(2020, 05, 01),
+              DateTime(2020, 05, 15),
+              DateTime(2020, 05, 20),
+            ];
+
+            expect(dates.every(interval.includes), isTrue);
+          });
+
+          test('does not include incorrect dates', () {
+            final List<DateTime> dates = [
+              DateTime(2020, 01, 02),
+              DateTime(2020, 02, 15),
+              DateTime(2020, 02, 20),
+              DateTime(2020, 03, 02),
+              DateTime(2020, 04, 15),
+              DateTime(2020, 04, 20),
+              DateTime(2020, 05, 02),
+              DateTime(2020, 06, 15),
+              DateTime(2020, 06, 20),
+            ];
+
+            expect(dates.every((date) => !interval.includes(date)), isTrue);
+          });
+        });
+
         group('end of the month', () {
           setUp(() {
             startDate = DateTime(2020, 01, 31);

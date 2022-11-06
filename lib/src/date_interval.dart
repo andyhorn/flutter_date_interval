@@ -11,6 +11,7 @@ class DateInterval {
     this.period = 1,
     this.interval = Intervals.once,
     Iterable<DateTime>? skipDates,
+    Iterable<int>? additionalDaysOfTheMonth,
   }) {
     if (period < 1) {
       throw ArgumentError.value(
@@ -25,6 +26,18 @@ class DateInterval {
         ? DateTime.now().withZeroTime()
         : startDate.withZeroTime();
     this.endDate = endDate?.withZeroTime();
+
+    additionalDaysOfTheMonth?.forEach((day) {
+      final date = DateTime(
+        this.startDate.year,
+        this.startDate.month,
+        day,
+      );
+
+      if (date.month == this.startDate.month) {
+        additionalDates.add(date);
+      }
+    });
   }
 
   /// The beginning of the interval. Determines the day-of-month (for monthly interval), day-of-week (for weekly interval).
@@ -41,6 +54,9 @@ class DateInterval {
 
   /// Any specific dates within the interval to skip that might otherwise be counted.
   final List<DateTime> skipDates = [];
+
+  /// Any additional "days of the month" that work alongside the start date.
+  final List<DateTime> additionalDates = [];
 
   /// Returns an [Iterable<DateTime>] of all valid dates between the
   /// configured [startDate] and the earliest of the configured
@@ -86,7 +102,10 @@ class DateInterval {
       case Intervals.weekly:
         return targetDate.isOnWeeklyIntervalFrom(startDate, period);
       case Intervals.monthly:
-        return targetDate.isOnMonthlyIntervalFrom(startDate, period);
+        final possibleDates = [startDate, ...additionalDates];
+        return possibleDates.any(
+          (date) => targetDate.isOnMonthlyIntervalFrom(date, period),
+        );
       case Intervals.yearly:
         return targetDate.isOnYearlyIntervalFrom(startDate, period);
     }
