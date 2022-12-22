@@ -5,7 +5,7 @@ extension IntervalsExtension on Intervals {
     var map = Intervals.values;
 
     for (var i = 0; i < map.length; i++) {
-      if (map[i].toString() == "Tage.$s") {
+      if (map[i].toString() == "Intervals.$s") {
         return map[i];
       }
     }
